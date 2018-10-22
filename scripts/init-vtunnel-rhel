@@ -1,0 +1,79 @@
+#!/bin/bash
+#
+# /etc/rc.d/init.d/vtunnel
+#
+# <description of the *service*>
+# <any general comments about this init script>
+#
+# <tags -- see below for tag definitions. *Every line* from the top
+# of the file to the end of the tags section must begin with a #
+# character. After the tags section, there should be a blank line.
+# This keeps normal comments in the rest of the file from being
+# mistaken for tags, should they happen to fit the pattern.>
+
+### BEGIN INIT INFO
+# Provides: vtunnel
+# Required-Start: network
+# Defalt-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Description: vsock tunnel
+### END INIT INFO
+
+DAEMON=/bin/vtunnel
+ARGS="-s -b"
+
+case "$1" in
+	start)
+                if [ -s /var/run/vtunnel.pid ]; then
+                        echo "vtunnel is running"
+                        exit
+                fi
+		echo -n "Starting vtunnel service: "
+		#daemon function
+		$DAEMON $ARGS
+		pidof vtunnel > /var/run/vtunnel.pid
+	;;
+	stop)
+		if [ -s /var/run/vtunnel.pid ]; then
+			echo -n "Shutting down vtunnel service: "
+			#killproc function
+			PID=`cat /var/run/vtunnel.pid`
+			kill $PID
+			rm -f /var/run/vtunnel.pid
+			exit
+		else
+			echo "vtunnel not running"
+			exit
+		fi
+	;;
+	status)
+		#status function
+		if [ -s /var/run/vtunnel.pid ]; then
+			echo "vtunnel is running"
+		else
+			echo "vtunnel not running"
+                fi
+		exit
+	;;
+	restart)
+		$0 stop; $0 start
+	;;
+	reload)
+		#kill -HUP
+		$0 stop; $0 start
+	;;
+	probe)
+		echo "Not implemented"
+		exit
+	;;
+        enable)
+                chkconfig vtunnel on
+        ;;
+        disable)
+                chkconfig vtunnel off
+        ;;
+	*)
+		echo "Usage: vtunnel {start|stop|status|reload|restart|enable|disable[|probe]"
+		exit 1
+	;;
+esac

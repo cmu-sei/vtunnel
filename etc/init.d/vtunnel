@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+# Copyright (c) 2018 Carnegie Mellon University
+#
+# Author: Adam Welle      <arwelle@cert.org>
+#
+# vtunnel:
+#   Start and stop the vtunnel daemon
+#
+# chkconfig: on 90 90
+# description: vsock tunnel
+
+VTUNNEL=/bin/vtunnel-esx
+VTUNNEL_TAG=vtunnel
+
+case "$1" in
+	start)
+		if [ -z "$(pidof -xs "${VTUNNEL}")" ]; then
+			/sbin/watchdog.sh -d -s "${VTUNNEL_TAG}" "${VTUNNEL} -s"
+			echo "vtunnel started"
+		else
+			echo "vtunnel already running"
+		fi
+	;;
+	stop)
+		if [ -n "$(pidof -xs "${VTUNNEL}")" ]; then
+			/sbin/watchdog.sh -k "${VTUNNEL_TAG}"
+			pkill -9 "${VTUNNEL}"
+		else
+			echo "vtunnel is not running"
+		fi
+	;;
+	status)
+		if [ -n "$(pidof -xs "${VTUNNEL}")" ]; then
+			echo "vtunnel is running as $(pidof -xs "${VTUNNEL}")"
+			exit 0
+		else
+			echo "vtunnel is not running"
+			exit 3
+		fi
+	;;
+	restart)
+		$0 stop
+		while [ -n "$(pidof -xs "${VTUNNEL}")" ];  do
+			sleep 1
+		done
+		$0 start
+	;;
+	reload)
+		$0 restart
+	;;
+        enable)
+                chkconfig vtunnel on
+        ;;
+        disable)
+                chkconfig vtunnel off
+        ;;
+	*)
+		echo "Usage: vtunnel {start|stop|status|reload|restart|enable|disable"
+		exit 1
+	;;
+esac

@@ -1,0 +1,11 @@
+Package: vtunnel
+Version: 0.5.0
+Source: vtunnel
+Priority: optional
+Maintainer: Adam Welle <arwelle@cert.org>
+Build-Depends: 
+Standards-Version: 3.9.8
+Homepage: http://www.cert.org
+Architecture: all
+Depends: 
+Description: host guest communications tunnel

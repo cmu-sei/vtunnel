@@ -1,0 +1,57 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          vtunnel
+# Required-Start:    $network $syslog $vmware-tools
+# Required-Stop:     $network $syslog $vmware-tools
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start vtunnel
+### END INIT INFO
+
+PATH="/sbin:/bin:/usr/sbin:/usr/bin"
+
+. /lib/lsb/init-functions
+
+DAEMON=/bin/vtunnel
+PIDFILE=/var/run/vtunnel.pid
+OPTS=-s
+
+test -x $DAEMON || exit 5
+
+case "$1" in
+	start)
+		log_daemon_msg "Starting server" "vtunnel"
+		start-stop-daemon --start --oknodo --make-pidfile --pidfile $PIDFILE --background --exec $DAEMON -- $OPTS
+		log_end_msg $?
+		;;
+	stop)
+		log_daemon_msg "Stopping tunnel" "vtunnel"
+		start-stop-daemon --stop --pidfile $PIDFILE
+		log_end_msg $?
+		rm -f $PIDFILE
+		;;
+	force-reload|restart)
+		$0 stop && sleep 2 && $0 start
+		;;
+	reload)
+		echo "reload not implemented"
+		;;
+	status)
+		status_of_proc $DAEMON "vtunnel"
+		;;
+        enable)
+		/usr/sbin/update-rc.d vtunnel defaults
+        	;;
+        disable)
+                /usr/sbin/update-rc.d vtunnel remove
+        	;;
+	*)
+	echo "Usage: /etc/init.d/vtunnel {start|stop|reload|restart|force-reload|enable|disable}"
+	exit 1
+	;;
+esac
+
+exit 0
+
+# vim: noet ts=8

@@ -1,0 +1,7 @@
+.rpmmacros
+bin/
+vtunnel.tgz
+dist
+html
+latex
+*.swp

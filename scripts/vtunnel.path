@@ -1,0 +1,13 @@
+#  This file is part of vtunnel 
+#
+#  Released under a BSD (SEI)-style license, please see license.txt or contact permission@sei.cmu.edu for full terms.
+
+[Unit]
+Description=Watch /dev/vsock and start vtunnel.service
+
+[Path]
+PathExists=/dev/vsock
+
+[Install]
+WantedBy=multi-user.target
+

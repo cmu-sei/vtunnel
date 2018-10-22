@@ -1,0 +1,18 @@
+# required modules
+on boot
+    insmod /lib/modules/4.9.31-android-x86_64/kernel/net/vmw_vsock/vsock.ko
+    insmod /lib/modules/4.9.31-android-x86_64/kernel/net/vmw_vsock/vmw_vsock_vmci_transport.ko
+
+# services
+on property:vtunnel.start=daemon
+    setprop vtunnel.start none
+    start vtunnel
+
+on property:vtunnel.stop=daemon
+    setprop vtunnel.stop none
+    stop vtunnel
+
+service vtunnel /system/bin/vtunnel -s
+    class main
+    seclabel u:r:su:s0
+

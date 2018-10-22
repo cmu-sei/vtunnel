@@ -1,0 +1,12 @@
+menu "Configuration"
+	depends on CONFIG_PACKAGE_kmod-vmw_vmci && CONFIG_PACKAGE_kmod-vmw_vsock_vmci_transport
+
+config BR2_PACKAGE_VTUNNEL
+        tristate "vtunnel - vsock tunnel"
+        default m if CONFIG_DEVEL
+        help
+        vtunnel is meant to tunnel IP traffic between guests and hosts
+
+endmenu
+~                                                                               
+

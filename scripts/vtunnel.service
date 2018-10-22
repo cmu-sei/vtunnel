@@ -1,0 +1,13 @@
+#  This file is part of vtunnel 
+#
+#  Released under a BSD (SEI)-style license, please see license.txt or contact permission@sei.cmu.edu for full terms.
+
+[Unit]
+Description=vsocket tunnel
+
+[Service]
+ExecStart=/bin/vtunnel -s
+
+[Install]
+WantedBy=multi-user.target
+

@@ -2,8 +2,59 @@
 This project provides the ability to tunnel IP traffic through the hypervisor
 so that connections can be proxied into or out of virtual machines.
 
-vtunnel - initiates tunnels
-vserver - processes tunnels. could be an option to vtunnel
+vtunnel - initiates vsock tunnels
+
+# Layout of this repo
+This repo is laid out so that it may be dropped into the build tree for various
+operating systems and compiled with their build system rather than the usual
+automake process (./configure; make; make install).
+
+The structure of this project's repository is as follows:
+```
+vtunnel/ - files in this directory exist for building the .ipkg for OpenWrt, the .deb for Debian variants, and the .rpm for RHEL variants.
+vtunnel/Android.mk - android makefile
+vtunnel/Config.in - used in OpenWrt build system to populate menu for `make menuconfig`
+vtunnel/Doxygen - used to generate html files for documentation
+vtunnel/rpmmacros - used to build the .rpm package
+vtunnel/Makefile - OpenWrt Makefile
+vtunnel/vtunnel.spec = used to build the .rpm package
+```
+
+Other Directories:
+```
+vtunnel/bin - binary output directory when running `make` inside of `vtunnel/src/`
+vtunnel/DEBIAN - files used for .deb package
+vtunnel/dist - compiled binaries and packages for various systems
+vtunnel/html - documentation created by Doxygen
+vtunnel/scripts - sysV init scripts, systemd unit files, and installation scripts
+vtunnel/src - source code
+```
+
+# Building vtunnel
+You can use the src/Makefile to build vtunnel for some distributions provided
+that you have installed all dependencies. mingw is used to cross compile this
+code for the Windows operating system.
+
+Windows
+```
+make windows
+```
+
+ESXi
+```
+make esx
+```
+
+Generic Linux using libc
+```
+make linux
+```
+
+Debian package for vyos
+```
+make vyos
+```
+
 
 # Usage for vtunnel
 ```
@@ -104,7 +155,7 @@ When running as either a client or a server, there is one main thread that will
 always be running. A total of three additional threads per tunnel are used for
 processing of the tunnel data. One thread is created to handle the connection
 and that thread creates two additonal threads, one for each socket, that will
-block on `recv()` until the socket can be read closes. The thread that detects
+block on recv() until the socket can be read closes. The thread that detects
 a closed socket will close the other socket, causing the other thread to exit.
 When both of these socket-handing threads exit, the tunnel thread will close.
 

@@ -1,0 +1,16 @@
+<ConfigRoot>
+  <service id='9002'>
+    <id>vtunnel</id>
+    <rule id='0000'>
+      <direction>inbound</direction>
+      <protocol>tcp</protocol>
+      <porttype>dst</porttype>
+      <port>
+        <begin>10000</begin>
+        <end>10999</end>
+      </port>
+    </rule>
+    <enabled>true</enabled>
+    <required>false</required>
+  </service>
+</ConfigRoot>
